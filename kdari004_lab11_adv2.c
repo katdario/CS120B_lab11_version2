@@ -27,6 +27,9 @@
 task task1, task2, task3, task4, task5, task6, task7;
 unsigned char playTwo = 0; //0=singlePlay (AI) , 1=twoPlayers (playerTwo)
 
+unsigned char scoreOne = 0;
+unsigned char scoreTwo = 0;
+
 unsigned char plOnePattern = 0x80;
 unsigned char plOneRow = 0x11;
 
@@ -73,6 +76,11 @@ int gameStartSM(int state){
 				aiPattern = 0x01;
 				aiRow = 0x11;
 
+				//reset score if someone won
+				if(scoreOne == 0x07 || scoreTwo == 0x07){
+					scoreOne = 0;
+					scoreTwo = 0;
+				}
 
 				state = Reset;
 			}
@@ -199,6 +207,7 @@ int ballSM(int state){
 							ballSpeed -= 50;
 						state = MoveDownRight;
 					}else{ //PlayerOne loses (ball was not hit)
+						scoreTwo = (scoreTwo << 1) | 0x01;
 						StartGame = 0;
 						state = WaitBall;
 					}
@@ -217,6 +226,7 @@ int ballSM(int state){
 							ballSpeed -= 50;
 						state = MoveDownRight;
 					}else{ //PlayerOne loses (ball was not hit)
+						scoreTwo = (scoreTwo << 1) | 0x01;
 						StartGame = 0;
 						state = WaitBall;
 					}
@@ -235,6 +245,7 @@ int ballSM(int state){
 							ballSpeed -= 50;
 						state = MoveUpRight;
 					}else{	//PlayerOne loses (ball was not hit)
+						scoreTwo = (scoreTwo << 1) | 0x01;
 						StartGame = 0;
 						state = WaitBall;
 					}
@@ -260,7 +271,8 @@ int ballSM(int state){
 							ballSpeed -= 50;
 						state = MoveDownRight;
 					}else{ //PlayerOne loses (ball was not hit)
-                                                StartGame = 0;
+                                                scoreTwo = (scoreTwo << 1) | 0x01;
+						StartGame = 0;
                                                 state = WaitBall;
                                         }
 				}
@@ -278,7 +290,8 @@ int ballSM(int state){
 							ballSpeed -= 50;
 						state = MoveDownRight;
 					}else{ //PlayerOne loses (ball was not hit)
-                                                StartGame = 0;
+                                                scoreTwo = (scoreTwo << 1) | 0x01;
+						StartGame = 0;
                                                 state = WaitBall;
                                         }
                                 }
@@ -296,7 +309,8 @@ int ballSM(int state){
 							ballSpeed -= 50;
 						state = MoveUpRight;
 					}else{   //PlayerOne loses (ball was not hit)
-                                                StartGame = 0;
+                                                scoreTwo = (scoreTwo << 1) | 0x01;
+						StartGame = 0;
                                                 state = WaitBall;
                                         }
                                 }
@@ -326,7 +340,8 @@ int ballSM(int state){
                                                         ballSpeed -= 50;
 						state = MoveDownRight;
 					}else{ //Player One loses (ball was not hit)
-                                                StartGame = 0;
+                                                scoreTwo = (scoreTwo << 1) | 0x01;
+						StartGame = 0;
                                                 state = WaitBall;
                                         }
                                 }
@@ -344,7 +359,8 @@ int ballSM(int state){
                                                         ballSpeed -= 50;
 						state = MoveDownRight;
 					}else{ //AI loses (ball was not hit)
-                                                StartGame = 0;
+                                                scoreTwo = (scoreTwo << 1) | 0x01;
+						StartGame = 0;
                                                 state = WaitBall;
                                         }
                                 }
@@ -362,7 +378,8 @@ int ballSM(int state){
                                                         ballSpeed -= 50;
 						state = MoveUpRight;
 					}else{   //AI loses (ball was not hit)
-                                                StartGame = 0;
+                                                scoreTwo = (scoreTwo << 1) | 0x01;
+						StartGame = 0;
                                                 state = WaitBall;
                                         }
                                 }
@@ -393,7 +410,8 @@ int ballSM(int state){
                                                         ballSpeed -= 50;
 						state = MoveDownLeft;
 					}else{ //PlayerOne loses (ball was not hit)
-                                                StartGame = 0;
+                                                scoreOne = (scoreOne << 1) | 0x01;
+						StartGame = 0;
                                                 state = WaitBall;
                                         }
                                 }
@@ -411,7 +429,8 @@ int ballSM(int state){
                                                         ballSpeed -= 50;
 						state = MoveDownLeft;
 					}else{ //PlayerOne loses (ball was not hit)
-                                                StartGame = 0;
+                                                scoreOne = (scoreOne << 1) | 0x01;
+						StartGame = 0;
                                                 state = WaitBall;
                                         }
                                 }
@@ -429,7 +448,8 @@ int ballSM(int state){
                                                         ballSpeed -= 50;
 						state = MoveUpLeft;
 					}else{   //PlayerOne loses (ball was not hit)
-                                                StartGame = 0;
+                                                scoreOne = (scoreOne << 1) | 0x01;
+						StartGame = 0;
                                                 state = WaitBall;
                                         }
                                 }
@@ -454,7 +474,8 @@ int ballSM(int state){
                                                         ballSpeed -= 50;
 						state = MoveDownLeft;
 					}else{ //AI loses (ball was not hit)
-                                                StartGame = 0;
+                                                scoreOne = (scoreOne << 1) | 0x01;
+						StartGame = 0;
                                                 state = WaitBall;
                                         }
                                 }
@@ -472,7 +493,8 @@ int ballSM(int state){
                                                         ballSpeed -= 50;
 						state = MoveDownLeft;
 					}else{ //AI loses (ball was not hit)
-                                                StartGame = 0;
+                                                scoreOne = (scoreOne << 1) | 0x01;
+						StartGame = 0;
                                                 state = WaitBall;
                                         }
                                 }
@@ -490,7 +512,8 @@ int ballSM(int state){
                                                         ballSpeed -= 50;
 						state = MoveUpLeft;
 					}else{   //AI loses (ball was not hit)
-                                                StartGame = 0;
+                                                scoreOne = (scoreOne << 1) | 0x01;
+						StartGame = 0;
                                                 state = WaitBall;
                                         }
                                 }
@@ -519,7 +542,8 @@ int ballSM(int state){
                                                         ballSpeed -= 50;
 						state = MoveDownLeft;
 					}else{ //AI loses (ball was not hit)
-                                                StartGame = 0;
+                                                scoreOne = (scoreOne << 1) | 0x01;
+						StartGame = 0;
                                                 state = WaitBall;
                                         }
                                 }
@@ -537,7 +561,8 @@ int ballSM(int state){
                                                         ballSpeed -= 50;
 						state = MoveDownLeft;
 					}else{ //AI loses (ball was not hit)
-                                                StartGame = 0;
+                                                scoreOne = (scoreOne << 1) | 0x01;
+						StartGame = 0;
                                                 state = WaitBall;
                                         }
                                 }
@@ -555,7 +580,8 @@ int ballSM(int state){
                                                         ballSpeed -= 50;
 						state = MoveUpLeft;
 					}else{   //AI loses (ball was not hit)
-                                                StartGame = 0;
+                                                scoreOne = (scoreOne << 1) | 0x01;
+						StartGame = 0;
                                                 state = WaitBall;
                                         }
                                 }
@@ -653,20 +679,20 @@ void ADC_init() {
 	// ADATE: setting this bit enables auto-triggering. Since we are in Free Running Mode, a new conversion will trigger whenever the previous conversion completes.
 }
 
-unsigned short lightAtRest;
+//unsigned short lightAtRest;
 
 int playTwoSM(int state){
-	unsigned short  pl2Input= ADC;
+//	unsigned short  pl2Input= ADC;
 	//unsigned short MAX = 0x33F;
-	//unsigned char upButton2 = ~PINA & 0x01;
-	//unsigned char downButton2 = ~PINA & 0x02;
+	unsigned char upButton2 = ~PINB & 0x40;
+	unsigned char downButton2 = ~PINB & 0x80;
 
 		
 
 	if(playTwo == 1){
 		switch(state){
                	        case Wait2:
-                                if(pl2Input <= (lightAtRest + 100) && pl2Input >= (lightAtRest - 100))
+                                /*if(pl2Input <= (lightAtRest + 100) && pl2Input >= (lightAtRest - 100))
                                         state = Wait2;
                                 else if(pl2Input > (lightAtRest + 100)){
                                         state = Up2;
@@ -677,34 +703,34 @@ int playTwoSM(int state){
                                         state = Down2;
                                         if(aiRow == 0x18 || aiRow == 0x11)
                                                 aiRow = ((aiRow << 1) | 0x01) & 0x1F;
-                                }/*
+                                }*/
 				if(!upButton2 && !downButton2)
-                                        state = Wait;
+                                        state = Wait2;
                                 else if(upButton2 && !downButton2){
-                                        state = Up;
+                                        state = Up2;
                                         if(aiRow  == 0x03 || aiRow == 0x11)
                                                 aiRow = ((aiRow >> 1) | 0x10) & 0x1F;
                                 }
                                 else{
-                                        state = Down;
+                                        state = Down2;
                                         if(aiRow == 0x18 || aiRow == 0x11)
                                                 aiRow = ((aiRow << 1) | 0x01) & 0x1F;
-                                }*/
+                                }
                                 break;
                         case Up2:
-                                if(pl2Input > (lightAtRest + 100))
-                                        state = Up;
+                                if(upButton2)
+                                        state = Up2;
                                 else
-                                        state = Wait;
+                                        state = Wait2;
                                 break;
                         case Down2:
-                                if(pl2Input < (lightAtRest - 100))
-                                        state = Down;
+                                if(downButton2)
+                                        state = Down2;
                                 else
-                                        state = Wait;
+                                        state = Wait2;
                                 break;
                         default:
-                                state = Wait;
+                                state = Wait2;
                                 break;
 		}
 	}
@@ -715,7 +741,7 @@ int playTwoSM(int state){
 //Display
 //============================================
 
-enum displayStates {displayP1, displayBall, displayAI};
+enum displayStates {displayP1, displayBall, displayAI, displayScore};
 
 int  display(int state){
 	switch(state){
@@ -733,6 +759,11 @@ int  display(int state){
 			PORTC = aiPattern;
 			PORTD = aiRow;
 			state = displayP1;
+			state = displayScore;
+			break;
+		case displayScore:
+			PORTA = ((scoreTwo << 4) & 0xF0) | (scoreOne & 0x0F);
+			state = displayP1;
 			break;
 		default:
 			state = displayP1;
@@ -744,7 +775,7 @@ int  display(int state){
 
 int main(void) {
     /* Insert DDR and PORT initializations */
-	DDRA = 0x00; PORTA = 0xFF;
+	DDRA = 0xFF; PORTA = 0x00;
 	DDRB = 0x00; PORTB = 0xFF;
 	DDRC = 0xFF; PORTC = 0x00;
 	DDRD = 0xFF; PORTD = 0x00;
@@ -757,8 +788,8 @@ int main(void) {
 	time_t t;
         srand((unsigned) time(&t));     //Initializes random number generator (reference from tutorialspoint.com)
 	
-	ADC_init();
-	lightAtRest = ADC;
+	//ADC_init();
+	//lightAtRest = ADC;
 
 	const char start = -1;
 	//Task 1 (StartGame)
@@ -793,7 +824,7 @@ int main(void) {
         task6.TickFct = &playTwoSM;
 	//Task 7 (Display)
         task7.state = start;
-        task7.period = 50;
+        task7.period = 10;
         task7.elapsedTime = task7.period;
         task7.TickFct = &display;
 
