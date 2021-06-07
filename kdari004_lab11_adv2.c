@@ -1,13 +1,13 @@
 /*	Author: lab
  *  Partner(s) Name: Kathleen Mae Dario
  *	Lab Section:
- *	Assignment: Lab 11  Exercise 2
+ *	Assignment: Lab 11  Exercise 3
  *	Exercise Description: [optional - include for your own benefit]
  *
  *	I acknowledge all content contained herein, excluding template or example
  *	code, is my own original work.
  *
- *	Demo link:
+ *	Demo link: https://youtu.be/DypCu2Xd8gY
  */
 #include <avr/io.h>
 #ifdef _SIMULATE_
