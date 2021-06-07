@@ -1,7 +1,7 @@
 /*	Author: lab
  *  Partner(s) Name: Kathleen Mae Dario
  *	Lab Section:
- *	Assignment: Lab 11  Exercise
+ *	Assignment: Lab 11  Exercise 2
  *	Exercise Description: [optional - include for your own benefit]
  *
  *	I acknowledge all content contained herein, excluding template or example
@@ -24,6 +24,8 @@
 //========================================
 // Global variables
 //========================================
+unsigned char playTwo = 0; //0=singlePlay (AI) , 1=twoPlayers (playerTwo)
+
 unsigned char plOnePattern = 0x80;
 unsigned char plOneRow = 0x11;
 
@@ -83,6 +85,34 @@ int gameStartSM(int state){
 	}
 	return state;
 }
+
+//============================================
+//PickPlayer2
+//============================================
+
+enum pickPlTwoStates {WaitPick, SwitchPlTwo};
+
+int pickPlTwoSM(int state){
+	unsigned char switchPl = (~PINB & 0x08) >> 3;
+	switch(state){
+		case WaitPick:
+			if(switchPl){
+				playTwo = (playTwo) ? 0 : 1;
+				state = SwitchPlTwo;
+			}
+			else
+				state = WaitPick;
+			break;
+		case SwitchPlTwo:
+			state = (switchPl)? SwitchPlTwo : WaitPick;
+			break;
+		default:
+			state = WaitPick;
+			break;
+	}
+	return state;
+}
+
 
 //===================================
 //PlayerOne SM
@@ -472,7 +502,7 @@ int ballSM(int state){
 enum AI_States {Move};
 
 int AI_SM(int state){
-	if(StartGame == 1){
+	if(StartGame == 1 && playTwo == 0){
 		unsigned char num = rand() % 3; //Generate random number 0 to 3
 
 		if(num == 0){ //moves 25% of the time
@@ -505,31 +535,44 @@ int AI_SM(int state){
 
 enum p2States {Wait2, Up2, Down2};
 
-int playTwo(int state){
-	unsigned char upButton = (~PINA & 0x02) >> 1;
-	switch(state){
-                        case Wait:
-                                if(!upButton && !downButton)
+void A2D_init() {
+      ADCSRA |= (1 << ADEN) | (1 << ADSC) | (1 << ADATE);
+	// ADEN: Enables analog-to-digital conversion
+	// ADSC: Starts analog-to-digital conversion
+	// ADATE: Enables auto-triggering, allowing for constant
+	//	    analog to digital conversions.
+}
+
+
+unsigned short joystickRest = 0;
+
+int playTwoSM(int state){
+	unsigned short joystick = ADC;
+	
+	if(StartGame==1 && playTwo == 1){
+		switch(state){
+               	        case Wait:
+                                if(joystick == joystickRest)
                                         state = Wait;
-                                else if(upButton && !downButton){
+                                else if(joystick > joystickRest){
                                         state = Up;
-                                        if(plOneRow  == 0x03 || plOneRow == 0x11)
-                                                plOneRow = ((plOneRow >> 1) | 0x10) & 0x1F;
+                                        if(aiRow  == 0x03 || aiRow == 0x11)
+                                                aiRow = ((aiRow >> 1) | 0x10) & 0x1F;
                                 }
                                 else{
                                         state = Down;
-                                        if(plOneRow == 0x18 || plOneRow == 0x11)
-                                                plOneRow = ((plOneRow << 1) | 0x01) & 0x1F;
+                                        if(aiRow == 0x18 || aiRow == 0x11)
+                                                aiRow = ((aiRow << 1) | 0x01) & 0x1F;
                                 }
                                 break;
                         case Up:
-                                if(upButton)
+                                if(joystick > joystickRest)
                                         state = Up;
                                 else
                                         state = Wait;
                                 break;
                         case Down:
-                                if(downButton)
+                                if(joystick < joystickRest)
                                         state = Down;
                                 else
                                         state = Wait;
@@ -537,7 +580,9 @@ int playTwo(int state){
                         default:
                                 state = Wait;
                                 break;
+		}
 	}
+	return state;
 }
 
 //============================================
@@ -572,18 +617,21 @@ int  display(int state){
 
 int main(void) {
     /* Insert DDR and PORT initializations */
+	//DDRA = 0x00; PORTA = 0xFF;
 	DDRB = 0x00; PORTB = 0xFF;
 	DDRC = 0xFF; PORTC = 0x00;
 	DDRD = 0xFF; PORTD = 0x00;
 
     /* Insert your solution below */
-	static task task1, task2, task3, task4, task5;
-	task *tasks[] = { &task1, &task2, &task3 , &task4, &task5};
+	static task task1, task2, task3, task4, task5, task6, task7;
+	task *tasks[] = { &task1, &task2, &task3 , &task4, &task5, &task6, &task7};
 	const unsigned short numTasks = sizeof(tasks)/sizeof(task*);
 
 	time_t t;
         srand((unsigned) time(&t));     //Initializes random number generator (reference from tutorialspoint.com)
-
+	
+	A2D_init();
+	joystickRest = ADC;
 
 	const char start = -1;
 	//Task 1 (StartGame)
@@ -591,26 +639,36 @@ int main(void) {
 	task1.period = 50;
 	task1.elapsedTime = task1.period;
 	task1.TickFct = &gameStartSM;
-	//Task 2 (PlayerOne)
-	task2.state = start;
-	task2.period = 200;
-	task2.elapsedTime = task2.period;
-	task2.TickFct = &movePlayer;
-	//Task 3 (BallSM)
-        task3.state = start;
-        task3.period = 800;
-        task3.elapsedTime = task3.period;
-        task3.TickFct = &ballSM;
-	//Task 4 (AI_SM)
+	//Task 2 (pickPlTwoSM)
+        task2.state = start;
+        task2.period = 200;
+        task2.elapsedTime = task2.period;
+        task2.TickFct = &pickPlTwoSM;
+	//Task 3 (PlayerOne)
+	task3.state = start;
+	task3.period = 200;
+	task3.elapsedTime = task3.period;
+	task3.TickFct = &movePlayer;
+	//Task 4 (BallSM)
         task4.state = start;
-        task4.period = 200;
+        task4.period = 800;
         task4.elapsedTime = task4.period;
-        task4.TickFct = &AI_SM;
-	//Task 5 (Display)
+        task4.TickFct = &ballSM;
+	//Task 5 (AI_SM)
         task5.state = start;
-        task5.period = 50;
+        task5.period = 200;
         task5.elapsedTime = task5.period;
-        task5.TickFct = &display;
+        task5.TickFct = &AI_SM;
+	//Task 6 (playTwoSM)
+        task6.state = start;
+        task6.period = 200;
+        task6.elapsedTime = task6.period;
+        task6.TickFct = &playTwoSM;
+	//Task 7 (Display)
+        task7.state = start;
+        task7.period = 50;
+        task7.elapsedTime = task7.period;
+        task7.TickFct = &display;
 
 
 	//find GCD of all periods
