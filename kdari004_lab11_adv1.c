@@ -676,24 +676,23 @@ int playTwoSM(int state){
 	unsigned char downButton2 = ~PINA & 0x02;
 
 		
-
 	if(playTwo == 1){
 		switch(state){
-               	        case Wait:
-                                /*if(joystick <= (520 + 50) && joystick >= (520 - 50))
-                                        state = Wait;
+               	        case Wait2:
+                                if(joystick <= (520 + 50) && joystick >= (520 - 50))
+                                        state = WaitUp;
                                 else if(joystick > (520 + 50)){
-                                        state = Up;
+                                        state = Up2;
                                         if(aiRow  == 0x03 || aiRow == 0x11)
                                                 aiRow = ((aiRow >> 1) | 0x10) & 0x1F;
                                 }
                                 else{
-                                        state = Down;
+                                        state = Down2;
                                         if(aiRow == 0x18 || aiRow == 0x11)
                                                 aiRow = ((aiRow << 1) | 0x01) & 0x1F;
-                                }*/
-				if(!upButton2 && !downButton2)
-                                        state = Wait;
+                                }
+				/*if(!upButton2 && !downButton2)
+                                        state = Wait2;
                                 else if(upButton2 && !downButton2){
                                         state = Up;
                                         if(aiRow  == 0x03 || aiRow == 0x11)
@@ -703,22 +702,22 @@ int playTwoSM(int state){
                                         state = Down;
                                         if(aiRow == 0x18 || aiRow == 0x11)
                                                 aiRow = ((aiRow << 1) | 0x01) & 0x1F;
-                                }
+                                }*/
                                 break;
-                        case Up:
-                                if(upButton2)
-                                        state = Up;
+                        case Up2:
+                                if(joystick > (520 + 50))
+                                        state = Up2;
                                 else
-                                        state = Wait;
+                                        state = Wait2;
                                 break;
-                        case Down:
-                                if(downButton2)
-                                        state = Down;
+                        case Down2:
+                                if(joystick < (520 - 50))
+                                        state = Down2;
                                 else
-                                        state = Wait;
+                                        state = Wait2;
                                 break;
                         default:
-                                state = Wait;
+                                state = Wait2;
                                 break;
 		}
 	}
