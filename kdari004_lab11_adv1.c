@@ -543,18 +543,31 @@ void A2D_init() {
 	//	    analog to digital conversions.
 }
 
+// Pins on PORTA are used as input for A2D conversion
+// The default channel is 0 (PA0)
+// The value of pinNum determines the pin on PORTA
+// used for A2D conversion
+// Valid values range between 0 and 7, where the value
+// represents the desired pin for A2D conversion
+void Set_A2D_Pin(unsigned char pinNum) {
+	ADMUX = (pinNum <= 0x07) ? pinNum : ADMUX;
+	// Allow channel to stabilize
+	static unsigned char i = 0;
+	for ( i=0; i<15; i++ ) { asm("nop"); }
+}
 
 unsigned short joystickRest = 0;
 
 int playTwoSM(int state){
+	Set_A2D_Pin(0x02);
 	unsigned short joystick = ADC;
 	
 	if(StartGame==1 && playTwo == 1){
 		switch(state){
                	        case Wait:
-                                if(joystick == joystickRest)
+                                if(joystick <= joystickRest + 50 && joystick >= joystickRest - 50)
                                         state = Wait;
-                                else if(joystick > joystickRest){
+                                else if(joystick > joystickRest + 50){
                                         state = Up;
                                         if(aiRow  == 0x03 || aiRow == 0x11)
                                                 aiRow = ((aiRow >> 1) | 0x10) & 0x1F;
@@ -566,13 +579,13 @@ int playTwoSM(int state){
                                 }
                                 break;
                         case Up:
-                                if(joystick > joystickRest)
+                                if(joystick > joystickRest + 50)
                                         state = Up;
                                 else
                                         state = Wait;
                                 break;
                         case Down:
-                                if(joystick < joystickRest)
+                                if(joystick < joystickRest - 50)
                                         state = Down;
                                 else
                                         state = Wait;
