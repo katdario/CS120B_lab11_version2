@@ -24,11 +24,13 @@
 //========================================
 // Global variables
 //========================================
+task task1, task2, task3, task4, task5, task6, task7;
 unsigned char playTwo = 0; //0=singlePlay (AI) , 1=twoPlayers (playerTwo)
 
 unsigned char plOnePattern = 0x80;
 unsigned char plOneRow = 0x11;
 
+unsigned short ballSpeed = 500;
 unsigned char ballPattern = 0x02;
 unsigned char ballRow = 0x1B;
 
@@ -184,37 +186,55 @@ int ballSM(int state){
 		case MoveStraightLeft:
 			if(ballPattern == 0x40){
 				if(plOneRow == 0x18){ //if paddle is at top (top, mid-top, center)
-					if(ballRow == 0x1E)	//ball at top
+					if(ballRow == 0x1E){	//ball at top
+						if(ballSpeed > 50)
+							ballSpeed -= 50;
 						state = MoveDownRight;
-					else if(ballRow == 0x1D)	//ball at mid-top
+					}else if(ballRow == 0x1D){	//ball at mid-top
+						if(ballSpeed < 1500)
+							ballSpeed += 50;
 						state = MoveStraightRight;
-					else if(ballRow == 0x1B)	//ball at center
+					}else if(ballRow == 0x1B){	//ball at center
+						if(ballSpeed > 50)
+							ballSpeed -= 50;
 						state = MoveDownRight;
-					else{ //PlayerOne loses (ball was not hit)
+					}else{ //PlayerOne loses (ball was not hit)
 						StartGame = 0;
 						state = WaitBall;
 					}
 				}
 				else if(plOneRow == 0x11){	//if paddle is at center (mid-top, center, mid-bottom)
-					if(ballRow == 0x1D)	//if ball at mid-top
+					if(ballRow == 0x1D){	//if ball at mid-top
+						if(ballSpeed > 50)
+							ballSpeed -= 50;
 						state = MoveUpRight;
-					else if(ballRow == 0x1B)	//if ball at center
+					}else if(ballRow == 0x1B){	//if ball at center
+						if(ballSpeed < 1500)
+							ballSpeed += 50;
 						state = MoveStraightRight;
-					else if(ballRow == 0x17)	//if ball at mid-bottom
+					}else if(ballRow == 0x17){	//if ball at mid-bottom
+						if(ballSpeed > 50)
+							ballSpeed -= 50;
 						state = MoveDownRight;
-					else{ //PlayerOne loses (ball was not hit)
+					}else{ //PlayerOne loses (ball was not hit)
 						StartGame = 0;
 						state = WaitBall;
 					}
 				}
 				else{	//if paddle is at bottom (center, mid-bottom, bottom)
-					if(ballRow == 0x1B)	//ball at center
+					if(ballRow == 0x1B){	//ball at center
+						if(ballSpeed > 50)
+							ballSpeed -= 50;
 						state = MoveUpRight;
-					else if(ballRow == 0x17)	//if ball at mid-bottom
+					}else if(ballRow == 0x17){	//if ball at mid-bottom
+						if(ballSpeed < 150)
+							ballSpeed += 50;
 						state = MoveStraightRight;
-					else if(ballRow == 0x0F)	//if ball at bottom
+					}else if(ballRow == 0x0F){	//if ball at bottom
+						if(ballSpeed > 50)
+							ballSpeed -= 50;
 						state = MoveUpRight;
-					else{	//PlayerOne loses (ball was not hit)
+					}else{	//PlayerOne loses (ball was not hit)
 						StartGame = 0;
 						state = WaitBall;
 					}
@@ -227,37 +247,55 @@ int ballSM(int state){
 		case MoveUpLeft:
 			if(ballPattern == 0x40){        //need to bounce to right if hit
 				if(plOneRow == 0x18){ //if paddle is at top (top, mid-top, center)
-					if(ballRow == 0x1E)     //ball at top
-                                                state = MoveDownRight;
-                                        else if(ballRow == 0x1D)        //ball at mid-top
-                                                state = MoveStraightRight;
-                                        else if(ballRow == 0x1B)        //ball at center
-                                                state = MoveDownRight;
-                                        else{ //PlayerOne loses (ball was not hit)
+					if(ballRow == 0x1E){     //ball at top
+                                                if(ballSpeed > 50)
+							ballSpeed -= 50;
+						state = MoveDownRight;
+					}else if(ballRow == 0x1D){        //ball at mid-top
+                                                if(ballSpeed < 1500)
+							ballSpeed += 50;
+						state = MoveStraightRight;
+					}else if(ballRow == 0x1B){        //ball at center
+                                                if(ballSpeed > 50)
+							ballSpeed -= 50;
+						state = MoveDownRight;
+					}else{ //PlayerOne loses (ball was not hit)
                                                 StartGame = 0;
                                                 state = WaitBall;
                                         }
 				}
 				else if(plOneRow == 0x11){      //if paddle is at center (mid-top, center, mid-bottom)
-                                        if(ballRow == 0x1D)     //if ball at mid-top
-                                                state = MoveUpRight;
-                                        else if(ballRow == 0x1B)        //if ball at center
-                                                state = MoveStraightRight;
-                                        else if(ballRow == 0x17)        //if ball at mid-bottom
-                                                state = MoveDownRight;
-                                        else{ //PlayerOne loses (ball was not hit)
+                                        if(ballRow == 0x1D){     //if ball at mid-top
+                                                if(ballSpeed > 50)
+							ballSpeed -= 50;
+						state = MoveUpRight;
+					}else if(ballRow == 0x1B){        //if ball at center
+                                                if(ballSpeed < 1500)
+							ballSpeed += 50;
+						state = MoveStraightRight;
+					}else if(ballRow == 0x17){        //if ball at mid-bottom
+                                                if(ballSpeed > 50)
+							ballSpeed -= 50;
+						state = MoveDownRight;
+					}else{ //PlayerOne loses (ball was not hit)
                                                 StartGame = 0;
                                                 state = WaitBall;
                                         }
                                 }
                                 else{   //if paddle is at bottom (center, mid-bottom, bottom)
-                                        if(ballRow == 0x1B)     //ball at center
-                                                state = MoveUpRight;
-                                        else if(ballRow == 0x17)        //if ball at mid-bottom
-                                                state = MoveStraightRight;
-                                        else if(ballRow == 0x0F)        //if ball at bottom
-                                                state = MoveUpRight;
-                                        else{   //PlayerOne loses (ball was not hit)
+                                        if(ballRow == 0x1B){     //ball at center
+                                                if(ballSpeed > 50)
+							ballSpeed -= 50;
+						state = MoveUpRight;
+					}else if(ballRow == 0x17){        //if ball at mid-bottom
+                                                if(ballSpeed < 1500)
+							ballSpeed += 50;
+						state = MoveStraightRight;
+					}else if(ballRow == 0x0F){        //if ball at bottom
+                                                if(ballSpeed > 50)
+							ballSpeed -= 50;
+						state = MoveUpRight;
+					}else{   //PlayerOne loses (ball was not hit)
                                                 StartGame = 0;
                                                 state = WaitBall;
                                         }
@@ -275,37 +313,55 @@ int ballSM(int state){
 		case MoveDownLeft:
 			if(ballPattern == 0x40){        //need to bounce to left if hit
                                 if(plOneRow == 0x18){ //if paddle is at top (top, mid-top, center)
-                                        if(ballRow == 0x1E)     //ball at top
-                                                state = MoveDownRight;
-                                        else if(ballRow == 0x1D)        //ball at mid-top
-                                                state = MoveStraightRight;
-                                        else if(ballRow == 0x1B)        //ball at center
-                                                state = MoveDownRight;
-                                        else{ //Player One loses (ball was not hit)
+                                        if(ballRow == 0x1E){     //ball at top
+                                                if(ballSpeed > 50)
+                                                        ballSpeed -= 50;
+						state = MoveDownRight;
+					}else if(ballRow == 0x1D){        //ball at mid-top
+                                                if(ballSpeed < 1500)
+                                                        ballSpeed += 50;
+						state = MoveStraightRight;
+					}else if(ballRow == 0x1B){        //ball at center
+                                                if(ballSpeed > 50)
+                                                        ballSpeed -= 50;
+						state = MoveDownRight;
+					}else{ //Player One loses (ball was not hit)
                                                 StartGame = 0;
                                                 state = WaitBall;
                                         }
                                 }
                                 else if(plOneRow == 0x11){      //if paddle is at center (mid-top, center, mid-bottom)
-                                        if(ballRow == 0x1D)     //if ball at mid-top
-                                                state = MoveUpRight;
-                                        else if(ballRow == 0x1B)        //if ball at center
-                                                state = MoveStraightRight;
-                                        else if(ballRow == 0x17)        //if ball at mid-bottom
-                                                state = MoveDownRight;
-                                        else{ //AI loses (ball was not hit)
+                                        if(ballRow == 0x1D){     //if ball at mid-top
+                                                if(ballSpeed > 50)
+                                                        ballSpeed -= 50;
+						state = MoveUpRight;
+					}else if(ballRow == 0x1B){        //if ball at center
+                                                if(ballSpeed < 1500)
+                                                        ballSpeed += 50;
+						state = MoveStraightRight;
+					}else if(ballRow == 0x17){        //if ball at mid-bottom
+                                                if(ballSpeed > 50)
+                                                        ballSpeed -= 50;
+						state = MoveDownRight;
+					}else{ //AI loses (ball was not hit)
                                                 StartGame = 0;
                                                 state = WaitBall;
                                         }
                                 }
 				else{   //if paddle is at bottom (center, mid-bottom, bottom)
-                                        if(ballRow == 0x1B)     //ball at center
-                                                state = MoveUpRight;
-                                        else if(ballRow == 0x17)        //if ball at mid-bottom
-                                                state = MoveStraightRight;
-                                        else if(ballRow == 0x0F)        //if ball at bottom
-                                                state = MoveUpRight;
-                                        else{   //AI loses (ball was not hit)
+                                        if(ballRow == 0x1B){     //ball at center
+                                                if(ballSpeed > 50)
+                                                        ballSpeed -= 50;
+						state = MoveUpRight;
+					}else if(ballRow == 0x17){        //if ball at mid-bottom
+                                                if(ballSpeed < 1500)
+                                                        ballSpeed += 50;
+						state = MoveStraightRight;
+					}else if(ballRow == 0x0F){        //if ball at bottom
+                                                if(ballSpeed > 50)
+                                                        ballSpeed -= 50;
+						state = MoveUpRight;
+					}else{   //AI loses (ball was not hit)
                                                 StartGame = 0;
                                                 state = WaitBall;
                                         }
@@ -324,37 +380,55 @@ int ballSM(int state){
 		case MoveStraightRight:
 			if(ballPattern == 0x02){
 				if(aiRow == 0x18){ //if paddle2 is at top (top, mid-top, center)
-                                        if(ballRow == 0x1E)     //ball at top
-                                                state = MoveDownLeft;
-                                        else if(ballRow == 0x1D)        //ball at mid-top
-                                                state = MoveStraightLeft;
-                                        else if(ballRow == 0x1B)        //ball at center
-                                                state = MoveDownLeft;
-                                        else{ //PlayerOne loses (ball was not hit)
+                                        if(ballRow == 0x1E){     //ball at top
+                                                if(ballSpeed > 50)
+                                                        ballSpeed -= 50;
+						state = MoveDownLeft;
+					}else if(ballRow == 0x1D){        //ball at mid-top
+                                                if(ballSpeed < 1500)
+                                                        ballSpeed += 50;
+						state = MoveStraightLeft;
+					}else if(ballRow == 0x1B) {       //ball at center
+                                                if(ballSpeed > 50)
+                                                        ballSpeed -= 50;
+						state = MoveDownLeft;
+					}else{ //PlayerOne loses (ball was not hit)
                                                 StartGame = 0;
                                                 state = WaitBall;
                                         }
                                 }
                                 else if(aiRow == 0x11){      //if paddle is at center (mid-top, center, mid-bottom)
-                                        if(ballRow == 0x1D)     //if ball at mid-top
-                                                state = MoveUpLeft;
-                                        else if(ballRow == 0x1B)        //if ball at center
-                                                state = MoveStraightLeft;
-                                        else if(ballRow == 0x17)        //if ball at mid-bottom
-                                                state = MoveDownLeft;
-                                        else{ //PlayerOne loses (ball was not hit)
+                                        if(ballRow == 0x1D){     //if ball at mid-top
+                                                if(ballSpeed > 50)
+                                                        ballSpeed -= 50;
+						state = MoveUpLeft;
+					}else if(ballRow == 0x1B){        //if ball at center
+                                                if(ballSpeed < 1500)
+                                                        ballSpeed += 50;
+						state = MoveStraightLeft;
+					}else if(ballRow == 0x17){        //if ball at mid-bottom
+                                                if(ballSpeed > 50)
+                                                        ballSpeed -= 50;
+						state = MoveDownLeft;
+					}else{ //PlayerOne loses (ball was not hit)
                                                 StartGame = 0;
                                                 state = WaitBall;
                                         }
                                 }
 				else{   //if paddle is at bottom (center, mid-bottom, bottom)
-                                        if(ballRow == 0x1B)     //ball at center
-                                                state = MoveUpLeft;
-                                        else if(ballRow == 0x17)        //if ball at mid-bottom
-                                                state = MoveStraightLeft;
-                                        else if(ballRow == 0x0F)        //if ball at bottom
-                                                state = MoveUpLeft;
-                                        else{   //PlayerOne loses (ball was not hit)
+                                        if(ballRow == 0x1B){     //ball at center
+                                                if(ballSpeed > 50)
+                                                        ballSpeed -= 50;
+						state = MoveUpLeft;
+					}else if(ballRow == 0x17){        //if ball at mid-bottom
+                                                if(ballSpeed < 1500)
+                                                        ballSpeed += 50;
+						state = MoveStraightLeft;
+					}else if(ballRow == 0x0F) {       //if ball at bottom
+                                                if(ballSpeed > 50)
+                                                        ballSpeed -= 50;
+						state = MoveUpLeft;
+					}else{   //PlayerOne loses (ball was not hit)
                                                 StartGame = 0;
                                                 state = WaitBall;
                                         }
@@ -367,37 +441,55 @@ int ballSM(int state){
 		case MoveUpRight:
 			if(ballPattern == 0x02){ 	//need to bounce to left if hit
 				if(aiRow == 0x18){ //if paddle is at top (top, mid-top, center)
-                                        if(ballRow == 0x1E)     //ball at top
-                                                state = MoveDownLeft;
-                                        else if(ballRow == 0x1D)        //ball at mid-top
-                                                state = MoveStraightLeft;
-                                        else if(ballRow == 0x1B)        //ball at center
-                                                state = MoveDownLeft;
-                                        else{ //AI loses (ball was not hit)
+                                        if(ballRow == 0x1E){     //ball at top
+                                                if(ballSpeed > 50)
+                                                        ballSpeed -= 50;
+						state = MoveDownLeft;
+					}else if(ballRow == 0x1D){        //ball at mid-top
+                                                if(ballSpeed < 1500)
+                                                        ballSpeed += 50;
+						state = MoveStraightLeft;
+					}else if(ballRow == 0x1B){        //ball at center
+                                                if(ballSpeed > 50)
+                                                        ballSpeed -= 50;
+						state = MoveDownLeft;
+					}else{ //AI loses (ball was not hit)
                                                 StartGame = 0;
                                                 state = WaitBall;
                                         }
                                 }
                                 else if(aiRow == 0x11){      //if paddle is at center (mid-top, center, mid-bottom)
-                                        if(ballRow == 0x1D)     //if ball at mid-top
-                                                state = MoveUpLeft;
-                                        else if(ballRow == 0x1B)        //if ball at center
-                                                state = MoveStraightLeft;
-                                        else if(ballRow == 0x17)        //if ball at mid-bottom
-                                                state = MoveDownLeft;
-                                        else{ //AI loses (ball was not hit)
+                                        if(ballRow == 0x1D){     //if ball at mid-top
+                                                if(ballSpeed > 50)
+                                                        ballSpeed -= 50;
+						state = MoveUpLeft;
+					}else if(ballRow == 0x1B){        //if ball at center
+                                                if(ballSpeed < 1500)
+                                                        ballSpeed += 50;
+						state = MoveStraightLeft;
+					}else if(ballRow == 0x17) {       //if ball at mid-bottom
+                                                if(ballSpeed > 50)
+                                                        ballSpeed -= 50;
+						state = MoveDownLeft;
+					}else{ //AI loses (ball was not hit)
                                                 StartGame = 0;
                                                 state = WaitBall;
                                         }
                                 }
 				else{   //if paddle is at bottom (center, mid-bottom, bottom)
-                                        if(ballRow == 0x1B)     //ball at center
-                                                state = MoveUpLeft;
-                                        else if(ballRow == 0x17)        //if ball at mid-bottom
-                                                state = MoveStraightLeft;
-                                        else if(ballRow == 0x0F)        //if ball at bottom
-                                                state = MoveUpLeft;
-                                        else{   //AI loses (ball was not hit)
+                                        if(ballRow == 0x1B){     //ball at center
+                                                if(ballSpeed > 50)
+                                                        ballSpeed -= 50;
+						state = MoveUpLeft;
+					}else if(ballRow == 0x17){        //if ball at mid-bottom
+                                                if(ballSpeed < 1500)
+                                                        ballSpeed += 50;
+						state = MoveStraightLeft;
+					}else if(ballRow == 0x0F){        //if ball at bottom
+                                                if(ballSpeed > 50)
+                                                        ballSpeed -= 50;
+						state = MoveUpLeft;
+					}else{   //AI loses (ball was not hit)
                                                 StartGame = 0;
                                                 state = WaitBall;
                                         }
@@ -414,37 +506,55 @@ int ballSM(int state){
 		case MoveDownRight:
 			if(ballPattern == 0x02){	//need to bounce to left if hit
 				if(aiRow == 0x18){ //if paddle is at top (top, mid-top, center)
-                                        if(ballRow == 0x1E)     //ball at top
-                                                state = MoveDownLeft;
-                                        else if(ballRow == 0x1D)        //ball at mid-top
-                                                state = MoveStraightLeft;
-                                        else if(ballRow == 0x1B)        //ball at center
-                                                state = MoveDownLeft;
-                                        else{ //AI loses (ball was not hit)
+                                        if(ballRow == 0x1E){     //ball at top
+                                                if(ballSpeed > 50)
+                                                        ballSpeed -= 50;
+						state = MoveDownLeft;
+					}else if(ballRow == 0x1D){        //ball at mid-top
+                                                if(ballSpeed < 1500)
+                                                        ballSpeed += 50;
+						state = MoveStraightLeft;
+					}else if(ballRow == 0x1B) {       //ball at center
+                                                if(ballSpeed > 50)
+                                                        ballSpeed -= 50;
+						state = MoveDownLeft;
+					}else{ //AI loses (ball was not hit)
                                                 StartGame = 0;
                                                 state = WaitBall;
                                         }
                                 }
                                 else if(aiRow == 0x11){      //if paddle is at center (mid-top, center, mid-bottom)
-                                        if(ballRow == 0x1D)     //if ball at mid-top
-                                                state = MoveUpLeft;
-                                        else if(ballRow == 0x1B)        //if ball at center
-                                                state = MoveStraightLeft;
-                                        else if(ballRow == 0x17)        //if ball at mid-bottom
-                                                state = MoveDownLeft;
-                                        else{ //AI loses (ball was not hit)
+                                        if(ballRow == 0x1D){     //if ball at mid-top
+                                                if(ballSpeed > 50)
+                                                        ballSpeed -= 50;
+						state = MoveUpLeft;
+					}else if(ballRow == 0x1B){        //if ball at center
+                                                if(ballSpeed < 1500)
+                                                        ballSpeed += 50;
+						state = MoveStraightLeft;
+					}else if(ballRow == 0x17){        //if ball at mid-bottom
+                                                if(ballSpeed > 50)
+                                                        ballSpeed -= 50;
+						state = MoveDownLeft;
+					}else{ //AI loses (ball was not hit)
                                                 StartGame = 0;
                                                 state = WaitBall;
                                         }
                                 }
 				else{   //if paddle is at bottom (center, mid-bottom, bottom)
-                                        if(ballRow == 0x1B)     //ball at center
-                                                state = MoveUpLeft;
-                                        else if(ballRow == 0x17)        //if ball at mid-bottom
-                                                state = MoveStraightLeft;
-                                        else if(ballRow == 0x0F)        //if ball at bottom
-                                                state = MoveUpLeft;
-                                        else{   //AI loses (ball was not hit)
+                                        if(ballRow == 0x1B){     //ball at center
+                                                if(ballSpeed > 50)
+                                                        ballSpeed -= 50;
+						state = MoveUpLeft;
+					}else if(ballRow == 0x17){        //if ball at mid-bottom
+                                                if(ballSpeed < 1500)
+                                                        ballSpeed += 50;
+						state = MoveStraightLeft;
+					}else if(ballRow == 0x0F){       //if ball at bottom
+                                                if(ballSpeed > 50)
+                                                        ballSpeed -= 50;
+						state = MoveUpLeft;
+					}else{   //AI loses (ball was not hit)
                                                 StartGame = 0;
                                                 state = WaitBall;
                                         }
@@ -492,6 +602,7 @@ int ballSM(int state){
                         break;
 	}
 	ballRow = ballRow & 0x1F;
+	task4.period = ballSpeed;
 	return state;
 }
 
@@ -644,6 +755,7 @@ int  display(int state){
 	return state;
 }
 
+
 int main(void) {
     /* Insert DDR and PORT initializations */
 	DDRA = 0x00; PORTA = 0xFF;
@@ -652,7 +764,7 @@ int main(void) {
 	DDRD = 0xFF; PORTD = 0x00;
 
     /* Insert your solution below */
-	static task task1, task2, task3, task4, task5, task6, task7;
+	//static task task1, task2, task3, task4, task5, task6, task7;
 	task *tasks[] = { &task1, &task2, &task3 , &task4, &task5, &task6, &task7};
 	const unsigned short numTasks = sizeof(tasks)/sizeof(task*);
 
@@ -681,7 +793,7 @@ int main(void) {
 	task3.TickFct = &movePlayer;
 	//Task 4 (BallSM)
         task4.state = start;
-        task4.period = 800;
+        task4.period = ballSpeed;
         task4.elapsedTime = task4.period;
         task4.TickFct = &ballSM;
 	//Task 5 (AI_SM)
