@@ -556,18 +556,34 @@ void Set_A2D_Pin(unsigned char pinNum) {
 	for ( i=0; i<15; i++ ) { asm("nop"); }
 }
 
-unsigned short joystickRest = 0;
+unsigned short joystickRest = 500;
 
 int playTwoSM(int state){
 	Set_A2D_Pin(0x02);
 	unsigned short joystick = ADC;
-	
-	if(StartGame==1 && playTwo == 1){
+	unsigned char upButton2 = ~PINA & 0x01;
+	unsigned char downButton2 = ~PINA & 0x02;
+
+		
+
+	if(playTwo == 1){
 		switch(state){
                	        case Wait:
-                                if(joystick <= joystickRest + 50 && joystick >= joystickRest - 50)
+                                /*if(joystick <= (520 + 50) && joystick >= (520 - 50))
                                         state = Wait;
-                                else if(joystick > joystickRest + 50){
+                                else if(joystick > (520 + 50)){
+                                        state = Up;
+                                        if(aiRow  == 0x03 || aiRow == 0x11)
+                                                aiRow = ((aiRow >> 1) | 0x10) & 0x1F;
+                                }
+                                else{
+                                        state = Down;
+                                        if(aiRow == 0x18 || aiRow == 0x11)
+                                                aiRow = ((aiRow << 1) | 0x01) & 0x1F;
+                                }*/
+				if(!upButton2 && !downButton2)
+                                        state = Wait;
+                                else if(upButton2 && !downButton2){
                                         state = Up;
                                         if(aiRow  == 0x03 || aiRow == 0x11)
                                                 aiRow = ((aiRow >> 1) | 0x10) & 0x1F;
@@ -579,13 +595,13 @@ int playTwoSM(int state){
                                 }
                                 break;
                         case Up:
-                                if(joystick > joystickRest + 50)
+                                if(upButton2)
                                         state = Up;
                                 else
                                         state = Wait;
                                 break;
                         case Down:
-                                if(joystick < joystickRest - 50)
+                                if(downButton2)
                                         state = Down;
                                 else
                                         state = Wait;
@@ -630,7 +646,7 @@ int  display(int state){
 
 int main(void) {
     /* Insert DDR and PORT initializations */
-	//DDRA = 0x00; PORTA = 0xFF;
+	DDRA = 0x00; PORTA = 0xFF;
 	DDRB = 0x00; PORTB = 0xFF;
 	DDRC = 0xFF; PORTC = 0x00;
 	DDRD = 0xFF; PORTD = 0x00;
@@ -644,6 +660,7 @@ int main(void) {
         srand((unsigned) time(&t));     //Initializes random number generator (reference from tutorialspoint.com)
 	
 	A2D_init();
+	Set_A2D_Pin(0x02);
 	joystickRest = ADC;
 
 	const char start = -1;
